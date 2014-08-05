@@ -5,8 +5,8 @@ using System.Text;
 
 namespace Website_Monitor.cjclass
 {
-    class CJWebBrowser 
+    public class Node
     {
+        public string name;
     }
-
 }
