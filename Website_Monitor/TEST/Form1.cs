@@ -21,7 +21,7 @@ namespace Website_Monitor
         {
             InitializeComponent();
         }
-
+        public string testHtml = "<html>	<head>		<meta lang=\"zh_cn\">		<link type=\"style/css\" src=\"www.bootstreat.com/hero.css\"/>	</head>	<body>		<div>			<p>click<a>hero</a>...</p>			<p id=\"conten\">Fuck</p>		</div>		<!--		<<<<<<<			this is some description			>		-->		<div>			<a>hero</a>			<p id=\"conten\">Fuck</p>			<img src=\"hero.jpg\" name=\"heroPic\" id=\"imgId\"/>		</div>	</body></html>";
         public  WebBrowser webBrowser1 = new WebBrowser();
         public string html;
 
@@ -32,30 +32,51 @@ namespace Website_Monitor
             
             //HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://fc.wut.edu.cn:8086/");
             html = html.Substring(html.IndexOf("<html"));
-           
+            List<string> styels = new List<string>();
+            bool stylestaus = true;
             HtmlGrammarOptions options = new HtmlGrammarOptions();
             options.HandleCharacterReferences = true;
             options.DecomposeCharacterReference = true;
             options.HandleUnfinishedTags = true;
             HtmlGrammar grammar = new HtmlGrammar(options);
-            HtmlReader reader = new HtmlReader(html, grammar);
+            HtmlReader reader = new HtmlReader(testHtml, grammar);
             while (reader.Enumerator.IsDisposed) {
                 txtHtmlWhole.Text += reader.Enumerator.MoveNext().ToString();
             }
             reader.Builder.TokenChaning += delegate(TokenChangingArgs args)
             {
+                //if (args.HasBefore)
+                //{
+                //    stylestaus = true;
+                //    foreach (string tmp in styels)
+                //    {
+                //        if (tmp == args.Before.Id && stylestaus)
+                //        {
+                //            stylestaus = false;
+                //        }
+                //    }
+                //    if (stylestaus)
+                //    {
+                //        styels.Add(args.Before.Id);
+                //    }
+                //}
                 if (args.HasBefore)
                 {
-                    txtHtmlWhole.Text += (args.Before.Id + " ## " + args.Before.Value + "\r\n");
+                    txtHtmlWhole.Text += (args.Before.Id + "\t#" + args.Before.Value + "#\r\n");
                 }
             };
             HtmlReader.Read(reader, null);
+            for (int i = 0; i < styels.Count; i++)
+            {
+                txtHtmlWhole.Text +="> "+i+" --- "+styels[i]+"\r\n > \r\n";
+            }
             //txtHtmlWhole.Text += reader.Status.ToString();
             //AfterWork.Html.Link link = new AfterWork.Html.Link(state, category);
             //txtHtmlWhole.Text +=  reader.State.Name;
             
             //webBrowser1.DocumentCompleted += 
             //    new WebBrowserDocumentCompletedEventHandler(browser_DocumentCompleted); 
+
         }
 
         private void button3_Click(object sender, EventArgs e)

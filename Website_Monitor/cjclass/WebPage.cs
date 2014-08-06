@@ -17,12 +17,17 @@ namespace Website_Monitor.cjclass
         public Node RootNode;
         public string Html;
 
+        private Stack<int> nodeState = new Stack<int>();
+
         public WebPage(string url)
         {
-            this.Url = url;            
+            this.Url = url;
+            this.getHtml();
         }
         public void init()
         {
+            this.RootNode = new Node();
+            Node nowNode = RootNode;
             if (getHtml())
             {
                 HtmlGrammarOptions options = new HtmlGrammarOptions();
@@ -37,6 +42,7 @@ namespace Website_Monitor.cjclass
                     {
                         KeyValuePair<string ,string > roll = 
                             new KeyValuePair<string,string>(args.Before.Id ,args.Before.Value);
+
                     }
                 };
                 HtmlReader.Read(reader, null);
@@ -50,9 +56,9 @@ namespace Website_Monitor.cjclass
                 WebClient client = new WebClient();
                 htmlTmp = Encoding.UTF8.GetString(client.DownloadData(Url));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Status = new KeyValuePair<int, string>(-1, "文件下载失败");
+                Status = new KeyValuePair<int, string>(-1, ex.Message);
                 return false ;
             }
             if (htmlTmp.IndexOf("<html") < 0)

@@ -50,7 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="cjclass\CJWebBrowser.cs" />
+    <Compile Include="cjclass\CJMainServer.cs" />
     <Compile Include="cjclass\Monitor.cs" />
     <Compile Include="cjclass\Node.cs" />
     <Compile Include="cjclass\WebPage.cs" />
@@ -75,6 +75,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="cjclass\readme.md" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
