@@ -78,20 +78,20 @@ namespace Website_Monitor
             //    new WebBrowserDocumentCompletedEventHandler(browser_DocumentCompleted); 
 
         }
+        private void button2_Click(object sender, EventArgs e)
+        {
+            string url = "file://G:/test1.html";
+            cjclass.WebPage page = new cjclass.WebPage(url);
+            //txtHtmlWhole.Text = page.RootNode.ToString();
+            //txtHtmlWhole.Text += page.Status.Value;
+            txtHtmlWhole.Text += page.testGetAtom();
+        }
 
         private void button3_Click(object sender, EventArgs e)
         {
-
+            ;
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-                if ((webBrowser1.StatusText == "完成"))
-                {
-                    txtHtmlWhole.Text += webBrowser1.StatusText + "\r\n@@";
-                    txtHtmlWhole.Text += webBrowser1.Document.Body.InnerHtml;
-                }
-        }
         private void browser_DocumentCompleted(object sender,
             WebBrowserDocumentCompletedEventArgs e)
         {

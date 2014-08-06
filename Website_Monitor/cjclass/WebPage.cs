@@ -10,43 +10,204 @@ using AfterWork.Html;
 
 namespace Website_Monitor.cjclass
 {
+    using KsVs = KeyValuePair<string, string>;
+    using KiVs = KeyValuePair<int, string>;
     public class WebPage
     {
         public string Url;
-        public KeyValuePair<int,string> Status;
+        public KiVs Status;
         public Node RootNode;
         public string Html;
 
-        private Stack<int> nodeState = new Stack<int>();
 
         public WebPage(string url)
         {
             this.Url = url;
             this.getHtml();
-        }
-        public void init()
-        {
-            this.RootNode = new Node();
-            Node nowNode = RootNode;
-            if (getHtml())
+            if (Status.Key>0)
             {
-                HtmlGrammarOptions options = new HtmlGrammarOptions();
-                options.HandleCharacterReferences = true;
-                options.DecomposeCharacterReference = true;
-                options.HandleUnfinishedTags = true;
-                HtmlGrammar grammar = new HtmlGrammar(options);
-                HtmlReader reader = new HtmlReader(Html, grammar);
-                reader.Builder.TokenChaning += delegate(TokenChangingArgs args)
-                {
-                    if (args.HasBefore)
-                    {
-                        KeyValuePair<string ,string > roll = 
-                            new KeyValuePair<string,string>(args.Before.Id ,args.Before.Value);
-
-                    }
-                };
-                HtmlReader.Read(reader, null);
+                this.AnalyzeHtml();
             }
+        }
+        public string testGetAtom()
+        {
+            HtmlGrammarOptions options = new HtmlGrammarOptions();
+            options.HandleCharacterReferences = true;
+            options.DecomposeCharacterReference = true;
+            options.HandleUnfinishedTags = true;
+            HtmlGrammar grammar = new HtmlGrammar(options);
+            HtmlReader reader = new HtmlReader(Html, grammar);
+            string str = "";
+            reader.Builder.TokenChaning += delegate(TokenChangingArgs args)
+            {
+                if (args.HasBefore)
+                {
+                    str += args.Before.Id + "#" + args.Before.Value + "#\r\n";
+                }
+            };
+            return str;
+        }
+        public void AnalyzeHtml()
+        {
+            // 解析Html是用到的栈
+            Stack<string> outStack = new Stack<string>();
+            Stack<string> inStack = new Stack<string>();
+            int operate = 0;
+            Node nowNode = RootNode;
+
+            HtmlGrammarOptions options = new HtmlGrammarOptions();
+            options.HandleCharacterReferences = true;
+            options.DecomposeCharacterReference = true;
+            options.HandleUnfinishedTags = true;
+            HtmlGrammar grammar = new HtmlGrammar(options);
+            HtmlReader reader = new HtmlReader(Html, grammar);
+            Status = new KiVs(2, "AnalyzeHtmling...");
+            reader.Builder.TokenChaning += delegate(TokenChangingArgs args)
+            {
+                if (args.HasBefore && Status.Key>0)
+                {
+                    KsVs roll = new KsVs(args.Before.Id ,args.Before.Value);
+                    string tmpStr;
+                    switch (roll.Key)
+                    {
+                        case "TAG_STARTS":
+                            if (operate == 0)
+                            {
+                                operate = 1;
+                            }
+                            else
+                            {
+                                Status = new KiVs(-4, operate + "#" + roll.Key + "#" + roll.Value);
+                            }
+                            break;
+                        case "TAG_ENDS":
+                            if (operate == 4)
+                            {
+                                operate = 0;
+                            }
+                            else
+                            {
+                                tmpStr = outStack.Peek();
+                                if (tmpStr == "meta" || tmpStr == "link")
+                                {
+                                    outStack.Pop();
+                                    operate = 0;
+                                }
+                            }
+                            operate = 0;
+                            break;
+                        case "NAME": // 添加节点到栈，新建ChildNode
+                            if (RootNode == null)
+                            {
+                                RootNode = new Node();
+                                nowNode = RootNode;
+                                nowNode.name = roll.Value;
+                                outStack.Push(roll.Value.ToLower());
+                            }
+                            else 
+                            {
+                                if (operate == 4) // 节点结束
+                                {
+                                    if (roll.Value.ToLower() == "html")
+                                    {
+                                        if (outStack.Peek() == "html")
+                                        {
+                                            Status = new KiVs(0, "Success");
+                                        }
+                                        else
+                                        {
+                                            Status = new KiVs(-5, "Error htmlOver");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (outStack.Peek() == roll.Value.ToLower())
+                                        {
+                                            outStack.Pop();
+                                            nowNode = nowNode.Parent;
+                                        }
+                                        else if(false)
+                                        {
+                                            while (outStack.Count > 0)
+                                            {
+                                                if (outStack.Peek() == roll.Value.ToLower())
+                                                {
+                                                    outStack.Pop();
+                                                    nowNode = nowNode.Parent;
+                                                    break;
+                                                }
+                                                else 
+                                                {
+                                                    outStack.Pop();
+                                                }
+                                            }
+                                            if (outStack.Count == 0)
+                                            {
+                                                Status = new KiVs(-6, "没有与 <" + roll.Value + "> 对应的标签");
+                                            }
+                                        }
+                                    }
+                                }
+                                else // 节点创建
+                                {
+                                    outStack.Push(roll.Value.ToLower());
+                                    nowNode.AddChild(roll.Value);
+                                }
+                            }
+                            operate = 1;
+                            break;
+                        case "ATTR": // 属性名
+                            operate = 4;
+                            inStack.Push(roll.Value);
+                            break;
+                        case "QUOTED_VALUE": // 属性内容
+                            if (inStack.Count == 1)
+                            {
+                                nowNode.AddAttribute(inStack.Pop(),roll.Value);
+                            }
+                            break;
+                        case "TEXT":
+                            nowNode.AddText(roll.Value);
+                            break;
+                        case "CLOSING":
+                            if (nowNode.Depth > 0)
+                            {
+                                nowNode = nowNode.Parent;
+                                outStack.Pop();
+                            }
+                            else
+                            {
+                                if (outStack.Count == 0)
+                                {
+                                    Status = new KiVs(0, "Over");
+                                }
+                                else
+                                {
+                                    Status = new KiVs(-3, outStack.Pop());
+                                }
+                            }
+                            break;
+                        case "ATOM":
+                            operate = 4;
+                            break;
+                        case "COMMENT_STARTS":
+                            break;
+                        case "COMMENT_BODY":
+                            nowNode.AddNote(roll.Value);
+                            break;
+                        case "COMMENT_ENDS":
+                            break;
+                        case "ASSIGN": // 赋值 =
+                            break;
+                        case "WHITESPACE":// 空格符
+                            break;
+                        default:
+                            Status = new KiVs(-2, roll.Key+"#"+roll.Value);
+                            break;
+                    }
+                }
+            };
+            HtmlReader.Read(reader, null);
         }
         private bool getHtml()
         {
@@ -67,8 +228,33 @@ namespace Website_Monitor.cjclass
                 return false;
             }
             Html = htmlTmp.Substring(htmlTmp.IndexOf("<html"));
-            Status = new KeyValuePair<int, string>(0, "文件下载完毕");
+            Status = new KeyValuePair<int, string>(1, "文件下载完毕");
             return true;
+        }
+        public string GetHtmlMD5()
+        {
+            if (Html != null)
+                return CJMainServer.EncryptMd5(Html);
+            else
+            {
+                return "";
+            }
+        }
+        public override string ToString()
+        {
+            try
+            {
+                return this.RootNode.ToString();
+            }
+            catch (Exception)
+            {
+                if (Html != null)
+                    return Html;
+                else
+                {
+                    return "";
+                }
+            }
         }
     }
 }
