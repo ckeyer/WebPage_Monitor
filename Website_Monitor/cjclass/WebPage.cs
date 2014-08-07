@@ -18,11 +18,22 @@ namespace Website_Monitor.cjclass
         public KiVs Status;
         public Node RootNode;
         public string Html;
+        public int PageDepth = 0;
 
         public WebPage(string url)
         {
             this.Url = url;
             this.getHtml();
+            this.Analyze();
+        }
+        public WebPage(string url ,bool analyze)
+        {
+            this.Url = url;
+            this.getHtml();
+            if (analyze)
+            {
+                this.Analyze();
+            }
         }
         public void Analyze()
         {
@@ -167,7 +178,13 @@ namespace Website_Monitor.cjclass
                         case "QUOTED_VALUE": // 属性内容
                             if (inStack.Count == 1)
                             {
-                                nowNode.AddAttribute(inStack.Pop(),roll.Value);
+                                string strtmp = roll.Value;
+                                if (strtmp[0] == '"' && strtmp[strtmp.Length-1] == '"')
+                                {
+                                    strtmp = strtmp.Remove(strtmp.Length - 1);
+                                    strtmp = strtmp.Remove(0,1);
+                                }
+                                nowNode.AddAttribute(inStack.Pop(), strtmp);
                             }
                             break;
                         case "TEXT":
@@ -263,6 +280,22 @@ namespace Website_Monitor.cjclass
                     return "";
                 }
             }
+        }
+        public List<string> getSrc()
+        {
+            return RootNode.getQuotedByAttr("src");
+        }
+        public List<string> getHref()
+        {
+            return RootNode.getQuotedByAttr("href");
+        }
+        public List<string> getTextContent()
+        {
+            return RootNode.getTextContent();
+        }
+        public List<string> getQuotedByNode_Attr(string nodeName, string attr)
+        {
+            return RootNode.getQuotedByNode_Attr(nodeName, attr);
         }
     }
 }

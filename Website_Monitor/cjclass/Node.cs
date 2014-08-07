@@ -105,5 +105,53 @@ namespace Website_Monitor.cjclass
         {
             return CJMainServer.EncryptMd5(this.ToString());
         }
+        public List<string> getQuotedByAttr(string attr)
+        {
+            List<string> quote = new List<string>();
+            foreach (KeyValuePair<string,string> vk in Attribute)
+            {
+                if (vk.Key == attr)
+                {
+                    quote.Add(vk.Value);
+                }
+            }
+            foreach (Node node in Child)
+            {
+                quote.AddRange(node.getQuotedByAttr(attr));
+            }
+            return quote;
+        }
+        public List<string> getQuotedByNode_Attr(string nodeName,string attr)
+        {
+            List<string> quote = new List<string>();
+            if (this.name == nodeName)
+            {
+                foreach (KeyValuePair<string, string> vk in Attribute)
+                {
+                    if (vk.Key == attr)
+                    {
+                        quote.Add(vk.Value);
+                    }
+                }
+            }
+            foreach (Node node in Child)
+            {
+                quote.AddRange(node.getQuotedByNode_Attr(nodeName,attr));
+            }
+            return quote;
+        }
+        public List<string> getTextContent()
+        {
+            List<string> quote = new List<string>();
+            if (this.name == "text")
+            {
+                quote.Add(this.TextContent);
+            }
+            foreach (Node node in Child)
+            {
+                quote.AddRange(node.getTextContent());
+            }
+            return quote;
+        }
     }
 }

@@ -68,8 +68,11 @@ namespace Website_Monitor
             string url = "file://G:/test1.html";
             //url = "http://fc.wut.edu.cn:8086/";
             cjclass.WebPage page = new cjclass.WebPage(url);
-            txtHtmlWhole.Text = page.RootNode.ToString();
-            txtHtmlWhole.Text += page.RootNode.NodesCount;
+            foreach (string str in page.getQuotedByNode_Attr("img","src"))
+            {
+                txtHtmlWhole.Text += str+"\r\n";
+            }
+
             //txtHtmlWhole.Text += page.Status.Value;
             //txtHtmlWhole.Text += page.testGetAtom();
             //txtHtmlWhole.Text = page.Html;
