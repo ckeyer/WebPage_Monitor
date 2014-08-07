@@ -19,7 +19,6 @@ namespace Website_Monitor.cjclass
         public Node RootNode;
         public string Html;
 
-
         public WebPage(string url)
         {
             this.Url = url;
@@ -92,6 +91,7 @@ namespace Website_Monitor.cjclass
                                 {
                                     outStack.Pop();
                                     operate = 0;
+                                    nowNode = nowNode.Parent;
                                 }
                             }
                             operate = 0;
@@ -101,7 +101,7 @@ namespace Website_Monitor.cjclass
                             {
                                 RootNode = new Node();
                                 nowNode = RootNode;
-                                nowNode.name = roll.Value;
+                                nowNode.name = roll.Value.ToLower();
                                 outStack.Push(roll.Value.ToLower());
                             }
                             else 
@@ -126,7 +126,7 @@ namespace Website_Monitor.cjclass
                                             outStack.Pop();
                                             nowNode = nowNode.Parent;
                                         }
-                                        else if(false)
+                                        else// if(false)
                                         {
                                             while (outStack.Count > 0)
                                             {
@@ -152,12 +152,13 @@ namespace Website_Monitor.cjclass
                                 {
                                     outStack.Push(roll.Value.ToLower());
                                     nowNode.AddChild(roll.Value);
+                                    nowNode = nowNode.Child[nowNode.Child.Count - 1];
                                 }
                             }
                             operate = 1;
                             break;
                         case "ATTR": // 属性名
-                            operate = 4;
+                            operate = 2;
                             inStack.Push(roll.Value);
                             break;
                         case "QUOTED_VALUE": // 属性内容
@@ -167,13 +168,14 @@ namespace Website_Monitor.cjclass
                             }
                             break;
                         case "TEXT":
-                            nowNode.AddText(roll.Value);
+                            if (roll.Value.Trim() != "")
+                            {
+                                nowNode.AddText(roll.Value);
+                            }
                             break;
                         case "CLOSING":
                             if (nowNode.Depth > 0)
                             {
-                                nowNode = nowNode.Parent;
-                                outStack.Pop();
                             }
                             else
                             {
@@ -183,12 +185,15 @@ namespace Website_Monitor.cjclass
                                 }
                                 else
                                 {
-                                    Status = new KiVs(-3, outStack.Pop());
+                                    //Status = new KiVs(-3, outStack.Pop()+nowNode.Depth);
                                 }
                             }
+                                operate = 4;
                             break;
                         case "ATOM":
                             operate = 4;
+                                nowNode = nowNode.Parent;
+                                outStack.Pop();
                             break;
                         case "COMMENT_STARTS":
                             break;

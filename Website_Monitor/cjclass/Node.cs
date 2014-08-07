@@ -12,6 +12,12 @@ namespace Website_Monitor.cjclass
         public List<KeyValuePair<string, string>> Attribute= new List<KeyValuePair<string,string>>();
         public List<Node> Child= new List<Node>();
         public Node Parent;
+        public int NodesCount {
+            get 
+            {
+                return this.getNodeCount();
+            } 
+        }
         public string TextContent;
         public Node()
         {
@@ -85,6 +91,15 @@ namespace Website_Monitor.cjclass
                 }
                 return tmp;
             }
+        }
+        public int getNodeCount()
+        {
+            int count = 1;
+            foreach (Node node in this.Child)
+            {
+                count += node.NodesCount;
+            }
+            return count;
         }
     }
 }

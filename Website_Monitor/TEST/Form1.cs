@@ -28,7 +28,7 @@ namespace Website_Monitor
         private void button1_Click(object sender, EventArgs e)
         {
             WebClient client = new WebClient();
-            html = Encoding.UTF8.GetString(client.DownloadData("http://fc.wut.edu.cn:8086/"));
+            html = Encoding.UTF8.GetString(client.DownloadData("file://G:/test1.html"));
             
             //HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://fc.wut.edu.cn:8086/");
             html = html.Substring(html.IndexOf("<html"));
@@ -45,21 +45,6 @@ namespace Website_Monitor
             }
             reader.Builder.TokenChaning += delegate(TokenChangingArgs args)
             {
-                //if (args.HasBefore)
-                //{
-                //    stylestaus = true;
-                //    foreach (string tmp in styels)
-                //    {
-                //        if (tmp == args.Before.Id && stylestaus)
-                //        {
-                //            stylestaus = false;
-                //        }
-                //    }
-                //    if (stylestaus)
-                //    {
-                //        styels.Add(args.Before.Id);
-                //    }
-                //}
                 if (args.HasBefore)
                 {
                     txtHtmlWhole.Text += (args.Before.Id + "\t#" + args.Before.Value + "#\r\n");
@@ -81,15 +66,20 @@ namespace Website_Monitor
         private void button2_Click(object sender, EventArgs e)
         {
             string url = "file://G:/test1.html";
+            //url = "http://fc.wut.edu.cn:8086/";
             cjclass.WebPage page = new cjclass.WebPage(url);
-            //txtHtmlWhole.Text = page.RootNode.ToString();
+            txtHtmlWhole.Text = page.RootNode.ToString();
+            txtHtmlWhole.Text += page.RootNode.NodesCount;
             //txtHtmlWhole.Text += page.Status.Value;
-            txtHtmlWhole.Text += page.testGetAtom();
+            //txtHtmlWhole.Text += page.testGetAtom();
+            //txtHtmlWhole.Text = page.Html;
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            ;
+            string str =" \t\t\t";
+            bool t = str.Trim() == "";
+            txtHtmlWhole.Text += t.ToString() ;
         }
 
         private void browser_DocumentCompleted(object sender,
