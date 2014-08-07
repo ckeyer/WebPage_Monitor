@@ -101,5 +101,9 @@ namespace Website_Monitor.cjclass
             }
             return count;
         }
+        public string getNodeMd5()
+        {
+            return CJMainServer.EncryptMd5(this.ToString());
+        }
     }
 }
