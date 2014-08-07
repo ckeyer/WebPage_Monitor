@@ -23,7 +23,10 @@ namespace Website_Monitor.cjclass
         {
             this.Url = url;
             this.getHtml();
-            if (Status.Key>0)
+        }
+        public void Analyze()
+        {
+            if (Status.Key > 0)
             {
                 this.AnalyzeHtml();
             }
@@ -46,7 +49,7 @@ namespace Website_Monitor.cjclass
             };
             return str;
         }
-        public void AnalyzeHtml()
+        private void AnalyzeHtml()
         {
             // 解析Html是用到的栈
             Stack<string> outStack = new Stack<string>();
