@@ -66,12 +66,9 @@ namespace Website_Monitor
         private void button2_Click(object sender, EventArgs e)
         {
             string url = "file://G:/test1.html";
-            //url = "http://fc.wut.edu.cn:8086/";
+            url = "http://hbagri.gov.cn/";
             cjclass.WebPage page = new cjclass.WebPage(url);
-            foreach (string str in page.getQuotedByNode_Attr("img","src"))
-            {
-                txtHtmlWhole.Text += str+"\r\n";
-            }
+            txtHtmlWhole.Text = page.RootNode.ToString();
 
             //txtHtmlWhole.Text += page.Status.Value;
             //txtHtmlWhole.Text += page.testGetAtom();

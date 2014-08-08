@@ -43,6 +43,19 @@ namespace Website_Monitor.cjclass
         }
         public void AddAttribute(string key,string value)
         {
+            int i = 0;
+            for (; i < this.Attribute.Count; i++)
+            {
+                if (Attribute[i].Key == key)
+                {
+                    break;
+                }
+            }
+            if (i < Attribute.Count)
+            {
+                value = Attribute[i].Value + value;
+                Attribute.RemoveAt(i);
+            }
             Attribute.Add(new KeyValuePair<string, string>(key, value));
         }
         public void AddText(string text)

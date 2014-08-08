@@ -101,7 +101,7 @@ namespace Website_Monitor.cjclass
                             else
                             {
                                 tmpStr = outStack.Peek();
-                                if (tmpStr == "meta" || tmpStr == "link")
+                                if (tmpStr == "meta" || tmpStr == "link" || tmpStr == "param")
                                 {
                                     outStack.Pop();
                                     operate = 0;
@@ -193,6 +193,18 @@ namespace Website_Monitor.cjclass
                                 nowNode.AddText(roll.Value);
                             }
                             break;
+                        case "STYLE":
+                            if (roll.Value.Trim() != "")
+                            {
+                                nowNode.AddText(roll.Value);
+                            }
+                            break;
+                        case "SCRIPT":
+                            if (roll.Value.Trim() != "")
+                            {
+                                nowNode.AddText(roll.Value);
+                            }
+                            break;
                         case "CLOSING":
                             if (nowNode.Depth > 0)
                             {
@@ -212,8 +224,17 @@ namespace Website_Monitor.cjclass
                             break;
                         case "ATOM":
                             operate = 4;
-                                nowNode = nowNode.Parent;
-                                outStack.Pop();
+                            nowNode = nowNode.Parent;
+                            outStack.Pop();
+                            break;
+                        case "CHAR_REF_STARTS": // &
+                            nowNode.AddAttribute(nowNode.Attribute[nowNode.Attribute.Count - 1].Key, roll.Value);
+                            break;
+                        case "CHAR_REF_ENTITY": // &后面的属性
+                            nowNode.AddAttribute(nowNode.Attribute[nowNode.Attribute.Count - 1].Key, roll.Value);
+                            break;
+                        case "CHAR_REF_ENDS": // &后面的属性
+                            nowNode.AddAttribute(nowNode.Attribute[nowNode.Attribute.Count - 1].Key, roll.Value);
                             break;
                         case "COMMENT_STARTS":
                             break;
