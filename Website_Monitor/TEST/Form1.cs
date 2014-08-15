@@ -66,7 +66,7 @@ namespace Website_Monitor
         private void button2_Click(object sender, EventArgs e)
         {
             string url = "file://G:/test1.html";
-            url = "http://hbagri.gov.cn/";
+            //url = "http://hbagri.gov.cn/";
             cjclass.WebPage page = new cjclass.WebPage(url);
             txtHtmlWhole.Text = page.RootNode.ToString();
 

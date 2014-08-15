@@ -140,7 +140,7 @@ namespace Website_Monitor.cjclass
                                             outStack.Pop();
                                             nowNode = nowNode.Parent;
                                         }
-                                        else// if(false)
+                                        else if(false)
                                         {
                                             while (outStack.Count > 0)
                                             {
@@ -175,6 +175,7 @@ namespace Website_Monitor.cjclass
                             operate = 2;
                             inStack.Push(roll.Value);
                             break;
+                        case "VALUE": // 属性内容
                         case "QUOTED_VALUE": // 属性内容
                             if (inStack.Count == 1)
                             {
@@ -228,13 +229,33 @@ namespace Website_Monitor.cjclass
                             outStack.Pop();
                             break;
                         case "CHAR_REF_STARTS": // &
-                            nowNode.AddAttribute(nowNode.Attribute[nowNode.Attribute.Count - 1].Key, roll.Value);
+                            if (nowNode.name != "text")
+                            {
+                                nowNode.AddAttribute(nowNode.Attribute[nowNode.Attribute.Count - 1].Key, roll.Value);
+                            }
+                            else {
+                                nowNode.TextContent+=roll.Value;
+                            }
                             break;
                         case "CHAR_REF_ENTITY": // &后面的属性
-                            nowNode.AddAttribute(nowNode.Attribute[nowNode.Attribute.Count - 1].Key, roll.Value);
+                            if (nowNode.name != "text")
+                            {
+                                nowNode.AddAttribute(nowNode.Attribute[nowNode.Attribute.Count - 1].Key, roll.Value);
+                            }
+                            else
+                            {
+                                nowNode.TextContent += roll.Value;
+                            }
                             break;
                         case "CHAR_REF_ENDS": // &后面的属性
-                            nowNode.AddAttribute(nowNode.Attribute[nowNode.Attribute.Count - 1].Key, roll.Value);
+                            if (nowNode.name != "text")
+                            {
+                                nowNode.AddAttribute(nowNode.Attribute[nowNode.Attribute.Count - 1].Key, roll.Value);
+                            }
+                            else
+                            {
+                                nowNode.TextContent += roll.Value;
+                            }
                             break;
                         case "COMMENT_STARTS":
                             break;

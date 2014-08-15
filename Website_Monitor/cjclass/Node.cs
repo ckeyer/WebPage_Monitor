@@ -7,6 +7,7 @@ namespace Website_Monitor.cjclass
 {
     public class Node
     {
+        StringBuilder s = new StringBuilder();
         public string name;
         public int Depth = 0;
         public List<KeyValuePair<string, string>> Attribute= new List<KeyValuePair<string,string>>();
