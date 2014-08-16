@@ -3,32 +3,27 @@
 
 ### 状态参数(Status.Key)
 
-> 0 --- TAG_STARTS
+> 0 --- TAG_STARTS : <
 >
-> 1 --- NAME
+> 1 --- NAME : 标签名
 >
-> 2 --- WHITESPACE
+> 2 --- WHITESPACE : 分隔符
 >
-> 3 --- ATTR
+> 3 --- ATTR : 属性名
 >
-> 4 --- ASSIGN
+> 4 --- ASSIGN : =
 >
-> 5 --- QUOTED_VALUE
+> 5 --- QUOTED_VALUE : 属性内容
 >
-> 6 --- TAG_ENDS
+> 6 --- TAG_ENDS : >
 >
 > 7 --- TEXT
 >
-> 8 --- ATOM
+> 8 --- ATOM : / 原子标签
 >
-> 9 --- CLOSING
+> 9 --- CLOSING : / 标签结束标示
 >
-> 10 --- COMMENT_STARTS
->
-> 11 --- COMMENT_BODY
->
-> 12 --- COMMENT_ENDS
->
+> 10 --- OVER : 解析完毕
 
 
 ### 状态参数(operate)

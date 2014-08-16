@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using System.Web;
 using System.Net;
 
-using AfterWork.Html;
+using mshtml;
 
 namespace Website_Monitor.cjclass
 {
@@ -16,18 +16,20 @@ namespace Website_Monitor.cjclass
     {
         public string Url;
         public KiVs Status;
-        public Node RootNode;
+        public cjclass.Node RootNode;
         public string Html;
         public int PageDepth = 0;
 
         public WebPage(string url)
         {
+            RootNode = new cjclass.Node();
             this.Url = url;
             this.getHtml();
             this.Analyze();
         }
         public WebPage(string url ,bool analyze)
         {
+            RootNode = new Node();
             this.Url = url;
             this.getHtml();
             if (analyze)
@@ -44,20 +46,9 @@ namespace Website_Monitor.cjclass
         }
         public string testGetAtom()
         {
-            HtmlGrammarOptions options = new HtmlGrammarOptions();
-            options.HandleCharacterReferences = true;
-            options.DecomposeCharacterReference = true;
-            options.HandleUnfinishedTags = true;
-            HtmlGrammar grammar = new HtmlGrammar(options);
-            HtmlReader reader = new HtmlReader(Html, grammar);
+
             string str = "";
-            reader.Builder.TokenChaning += delegate(TokenChangingArgs args)
-            {
-                if (args.HasBefore)
-                {
-                    str += args.Before.Id + "#" + args.Before.Value + "#\r\n";
-                }
-            };
+
             return str;
         }
         private void AnalyzeHtml()
@@ -67,214 +58,205 @@ namespace Website_Monitor.cjclass
             Stack<string> inStack = new Stack<string>();
             int operate = 0;
             Node nowNode = RootNode;
-
-            HtmlGrammarOptions options = new HtmlGrammarOptions();
-            options.HandleCharacterReferences = true;
-            options.DecomposeCharacterReference = true;
-            options.HandleUnfinishedTags = true;
-            HtmlGrammar grammar = new HtmlGrammar(options);
-            HtmlReader reader = new HtmlReader(Html, grammar);
             Status = new KiVs(2, "AnalyzeHtmling...");
-            reader.Builder.TokenChaning += delegate(TokenChangingArgs args)
+            HtmlResolve reader = new HtmlResolve(Html);
+            
+            for (KsVs roll = reader.PopNextRoll(); roll.Key != "OVER" && Status.Key > 0;roll = reader.PopNextRoll() )
             {
-                if (args.HasBefore && Status.Key>0)
+                string tmpStr;
+                switch (roll.Key)
                 {
-                    KsVs roll = new KsVs(args.Before.Id ,args.Before.Value);
-                    string tmpStr;
-                    switch (roll.Key)
-                    {
-                        case "TAG_STARTS":
-                            if (operate == 0)
-                            {
-                                operate = 1;
-                            }
-                            else
-                            {
-                                Status = new KiVs(-4, operate + "#" + roll.Key + "#" + roll.Value);
-                            }
-                            break;
-                        case "TAG_ENDS":
-                            if (operate == 4)
-                            {
-                                operate = 0;
-                            }
-                            else
-                            {
-                                tmpStr = outStack.Peek();
-                                if (tmpStr == "meta" || tmpStr == "link" || tmpStr == "param")
-                                {
-                                    outStack.Pop();
-                                    operate = 0;
-                                    nowNode = nowNode.Parent;
-                                }
-                            }
+                    case "TAG_STARTS":
+                        if (operate == 0)
+                        {
+                            operate = 1;
+                        }
+                        else
+                        {
+                            Status = new KiVs(-4, operate + "#" + roll.Key + "#" + roll.Value);
+                        }
+                        break;
+                    case "TAG_ENDS":
+                        if (operate == 4)
+                        {
                             operate = 0;
-                            break;
-                        case "NAME": // 添加节点到栈，新建ChildNode
-                            if (RootNode == null)
+                        }
+                        else
+                        {
+                            tmpStr = outStack.Peek();
+                            if (tmpStr == "meta" || tmpStr == "link" || tmpStr == "param")
                             {
-                                RootNode = new Node();
-                                nowNode = RootNode;
-                                nowNode.name = roll.Value.ToLower();
-                                outStack.Push(roll.Value.ToLower());
+                                outStack.Pop();
+                                operate = 0;
+                                nowNode = nowNode.Parent;
                             }
-                            else 
+                        }
+                        operate = 0;
+                        break;
+                    case "NAME": // 添加节点到栈，新建ChildNode
+                        if (RootNode == null)
+                        {
+                            RootNode = new Node();
+                            nowNode = RootNode;
+                            nowNode.name = roll.Value.ToLower();
+                            outStack.Push(roll.Value.ToLower());
+                        }
+                        else
+                        {
+                            if (operate == 4) // 节点结束
                             {
-                                if (operate == 4) // 节点结束
+                                if (roll.Value.ToLower() == "html")
                                 {
-                                    if (roll.Value.ToLower() == "html")
+                                    if (outStack.Peek() == "html")
                                     {
-                                        if (outStack.Peek() == "html")
-                                        {
-                                            Status = new KiVs(0, "Success");
-                                        }
-                                        else
-                                        {
-                                            Status = new KiVs(-5, "Error htmlOver");
-                                        }
+                                        Status = new KiVs(0, "Success");
                                     }
                                     else
                                     {
-                                        if (outStack.Peek() == roll.Value.ToLower())
-                                        {
-                                            outStack.Pop();
-                                            nowNode = nowNode.Parent;
-                                        }
-                                        else if(false)
-                                        {
-                                            while (outStack.Count > 0)
-                                            {
-                                                if (outStack.Peek() == roll.Value.ToLower())
-                                                {
-                                                    outStack.Pop();
-                                                    nowNode = nowNode.Parent;
-                                                    break;
-                                                }
-                                                else 
-                                                {
-                                                    outStack.Pop();
-                                                }
-                                            }
-                                            if (outStack.Count == 0)
-                                            {
-                                                Status = new KiVs(-6, "没有与 <" + roll.Value + "> 对应的标签");
-                                            }
-                                        }
+                                        Status = new KiVs(-5, "Error htmlOver");
                                     }
-                                }
-                                else // 节点创建
-                                {
-                                    outStack.Push(roll.Value.ToLower());
-                                    nowNode.AddChild(roll.Value);
-                                    nowNode = nowNode.Child[nowNode.Child.Count - 1];
-                                }
-                            }
-                            operate = 1;
-                            break;
-                        case "ATTR": // 属性名
-                            operate = 2;
-                            inStack.Push(roll.Value);
-                            break;
-                        case "VALUE": // 属性内容
-                        case "QUOTED_VALUE": // 属性内容
-                            if (inStack.Count == 1)
-                            {
-                                string strtmp = roll.Value;
-                                if (strtmp[0] == '"' && strtmp[strtmp.Length-1] == '"')
-                                {
-                                    strtmp = strtmp.Remove(strtmp.Length - 1);
-                                    strtmp = strtmp.Remove(0,1);
-                                }
-                                nowNode.AddAttribute(inStack.Pop(), strtmp);
-                            }
-                            break;
-                        case "TEXT":
-                            if (roll.Value.Trim() != "")
-                            {
-                                nowNode.AddText(roll.Value);
-                            }
-                            break;
-                        case "STYLE":
-                            if (roll.Value.Trim() != "")
-                            {
-                                nowNode.AddText(roll.Value);
-                            }
-                            break;
-                        case "SCRIPT":
-                            if (roll.Value.Trim() != "")
-                            {
-                                nowNode.AddText(roll.Value);
-                            }
-                            break;
-                        case "CLOSING":
-                            if (nowNode.Depth > 0)
-                            {
-                            }
-                            else
-                            {
-                                if (outStack.Count == 0)
-                                {
-                                    Status = new KiVs(0, "Over");
                                 }
                                 else
                                 {
-                                    //Status = new KiVs(-3, outStack.Pop()+nowNode.Depth);
+                                    if (outStack.Peek() == roll.Value.ToLower())
+                                    {
+                                        outStack.Pop();
+                                        nowNode = nowNode.Parent;
+                                    }
+                                    else if (false)
+                                    {
+                                        while (outStack.Count > 0)
+                                        {
+                                            if (outStack.Peek() == roll.Value.ToLower())
+                                            {
+                                                outStack.Pop();
+                                                nowNode = nowNode.Parent;
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                outStack.Pop();
+                                            }
+                                        }
+                                        if (outStack.Count == 0)
+                                        {
+                                            Status = new KiVs(-6, "没有与 <" + roll.Value + "> 对应的标签");
+                                        }
+                                    }
                                 }
                             }
-                                operate = 4;
-                            break;
-                        case "ATOM":
-                            operate = 4;
-                            nowNode = nowNode.Parent;
-                            outStack.Pop();
-                            break;
-                        case "CHAR_REF_STARTS": // &
-                            if (nowNode.name != "text")
+                            else // 节点创建
                             {
-                                nowNode.AddAttribute(nowNode.Attribute[nowNode.Attribute.Count - 1].Key, roll.Value);
+                                outStack.Push(roll.Value.ToLower());
+                                nowNode.AddChild(roll.Value);
+                                nowNode = nowNode.Child[nowNode.Child.Count - 1];
                             }
-                            else {
-                                nowNode.TextContent+=roll.Value;
-                            }
-                            break;
-                        case "CHAR_REF_ENTITY": // &后面的属性
-                            if (nowNode.name != "text")
+                        }
+                        operate = 1;
+                        break;
+                    case "ATTR": // 属性名
+                        operate = 2;
+                        inStack.Push(roll.Value);
+                        break;
+                    case "VALUE": // 属性内容
+                    case "QUOTED_VALUE": // 属性内容
+                        if (inStack.Count == 1)
+                        {
+                            string strtmp = roll.Value;
+                            if (strtmp.Length>0&& strtmp[0] == '\"' && strtmp[strtmp.Length - 1] == '\"')
                             {
-                                nowNode.AddAttribute(nowNode.Attribute[nowNode.Attribute.Count - 1].Key, roll.Value);
+                                strtmp = strtmp.Remove(strtmp.Length - 1);
+                                strtmp = strtmp.Remove(0, 1);
+                            }
+                            nowNode.AddAttribute(inStack.Pop(), strtmp);
+                        }
+                        break;
+                    case "TEXT":
+                        if (roll.Value.Trim() != "")
+                        {
+                            nowNode.AddText(roll.Value);
+                        }
+                        break;
+                    case "STYLE":
+                        if (roll.Value.Trim() != "")
+                        {
+                            nowNode.AddText(roll.Value);
+                        }
+                        break;
+                    case "SCRIPT":
+                        if (roll.Value.Trim() != "")
+                        {
+                            nowNode.AddText(roll.Value);
+                        }
+                        break;
+                    case "CLOSING":
+                        if (nowNode.Depth > 0)
+                        {
+                        }
+                        else
+                        {
+                            if (outStack.Count == 0)
+                            {
+                                Status = new KiVs(0, "Over");
                             }
                             else
                             {
-                                nowNode.TextContent += roll.Value;
+                                //Status = new KiVs(-3, outStack.Pop()+nowNode.Depth);
                             }
-                            break;
-                        case "CHAR_REF_ENDS": // &后面的属性
-                            if (nowNode.name != "text")
-                            {
-                                nowNode.AddAttribute(nowNode.Attribute[nowNode.Attribute.Count - 1].Key, roll.Value);
-                            }
-                            else
-                            {
-                                nowNode.TextContent += roll.Value;
-                            }
-                            break;
-                        case "COMMENT_STARTS":
-                            break;
-                        case "COMMENT_BODY":
-                            nowNode.AddNote(roll.Value);
-                            break;
-                        case "COMMENT_ENDS":
-                            break;
-                        case "ASSIGN": // 赋值 =
-                            break;
-                        case "WHITESPACE":// 空格符
-                            break;
-                        default:
-                            Status = new KiVs(-2, roll.Key+"#"+roll.Value);
-                            break;
-                    }
+                        }
+                        operate = 4;
+                        break;
+                    case "ATOM":
+                        operate = 4;
+                        nowNode = nowNode.Parent;
+                        outStack.Pop();
+                        break;
+                    case "CHAR_REF_STARTS": // &
+                        if (nowNode.name != "text")
+                        {
+                            nowNode.AddAttribute(nowNode.Attribute[nowNode.Attribute.Count - 1].Key, roll.Value);
+                        }
+                        else
+                        {
+                            nowNode.TextContent += roll.Value;
+                        }
+                        break;
+                    case "CHAR_REF_ENTITY": // &后面的属性
+                        if (nowNode.name != "text")
+                        {
+                            nowNode.AddAttribute(nowNode.Attribute[nowNode.Attribute.Count - 1].Key, roll.Value);
+                        }
+                        else
+                        {
+                            nowNode.TextContent += roll.Value;
+                        }
+                        break;
+                    case "CHAR_REF_ENDS": // &后面的属性
+                        if (nowNode.name != "text")
+                        {
+                            nowNode.AddAttribute(nowNode.Attribute[nowNode.Attribute.Count - 1].Key, roll.Value);
+                        }
+                        else
+                        {
+                            nowNode.TextContent += roll.Value;
+                        }
+                        break;
+                    case "COMMENT_STARTS":
+                        break;
+                    case "COMMENT_BODY":
+                        nowNode.AddNote(roll.Value);
+                        break;
+                    case "COMMENT_ENDS":
+                        break;
+                    case "ASSIGN": // 赋值 =
+                        break;
+                    case "WHITESPACE":// 空格符
+                        break;
+                    default:
+                        Status = new KiVs(-2, roll.Key + "#" + roll.Value);
+                        break;
                 }
-            };
-            HtmlReader.Read(reader, null);
+            }
         }
         private bool getHtml()
         {

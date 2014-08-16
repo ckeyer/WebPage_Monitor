@@ -34,10 +34,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AfterWork.Html, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>lib\AfterWork.Html.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -53,6 +49,7 @@
     <Compile Include="cjclass\CJMainServer.cs" />
     <Compile Include="cjclass\Monitor.cs" />
     <Compile Include="cjclass\Node.cs" />
+    <Compile Include="cjclass\HtmlResolve.cs" />
     <Compile Include="cjclass\WebPage.cs" />
     <Compile Include="cjclass\Website.cs" />
     <Compile Include="TEST\Form1.cs">
@@ -88,6 +85,17 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="lib\AfterWork.Html.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="MSHTML">
+      <Guid>{3050F1C5-98B5-11CF-BB82-00AA00BDCE0B}</Guid>
+      <VersionMajor>4</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -14,6 +14,6 @@ G:\code\go\src\webPage_Monitor\Website_Monitor\obj\x86\Debug\Website_Monitor.Pro
 G:\code\go\src\webPage_Monitor\Website_Monitor\obj\x86\Debug\Website_Monitor.csproj.GenerateResource.Cache
 G:\code\go\src\webPage_Monitor\Website_Monitor\bin\Debug\Website_Monitor.exe
 G:\code\go\src\webPage_Monitor\Website_Monitor\bin\Debug\Website_Monitor.pdb
-G:\code\go\src\webPage_Monitor\Website_Monitor\bin\Debug\AfterWork.Html.dll
 G:\code\go\src\webPage_Monitor\Website_Monitor\obj\x86\Debug\Website_Monitor.exe
 G:\code\go\src\webPage_Monitor\Website_Monitor\obj\x86\Debug\Website_Monitor.pdb
+G:\code\go\src\webPage_Monitor\Website_Monitor\obj\x86\Debug\Website_Monitor.csproj.ResolveComReference.cache

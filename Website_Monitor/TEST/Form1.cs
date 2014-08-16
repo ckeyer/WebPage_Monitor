@@ -8,13 +8,12 @@ using System.Text;
 using System.Windows.Forms;
 using System.Net;
 using System.Threading;
-
-using AfterWork.Html.Testing;
-using AfterWork.Html;
 using System.IO;
 
 namespace Website_Monitor
 {
+    using KsVs = KeyValuePair<string, string>;
+    using KiVs = KeyValuePair<int, string>;
     public partial class Form1 : Form
     {
         public Form1()
@@ -24,37 +23,47 @@ namespace Website_Monitor
         public string testHtml = "<html>	<head>		<meta lang=\"zh_cn\">		<link type=\"style/css\" src=\"www.bootstreat.com/hero.css\"/>	</head>	<body>		<div>			<p>click<a>hero</a>...</p>			<p id=\"conten\">Fuck</p>		</div>		<!--		<<<<<<<			this is some description			>		-->		<div>			<a>hero</a>			<p id=\"conten\">Fuck</p>			<img src=\"hero.jpg\" name=\"heroPic\" id=\"imgId\"/>		</div>	</body></html>";
         public  WebBrowser webBrowser1 = new WebBrowser();
         public string html;
-
+        private string popNextString(int n)
+        {
+            if (n > testHtml.Length)
+            {
+                return null;
+            }
+            string tmp = testHtml.Substring(0, n);
+            testHtml = testHtml.Remove(0, n);
+            return tmp;
+        }
         private void button1_Click(object sender, EventArgs e)
         {
-            WebClient client = new WebClient();
-            html = Encoding.UTF8.GetString(client.DownloadData("file://G:/test1.html"));
+            txtHtmlWhole.Text = popNextString(testHtml.IndexOf('\"'));
+            //WebClient client = new WebClient();
+            //html = Encoding.UTF8.GetString(client.DownloadData("file://G:/test1.html"));
             
             //HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://fc.wut.edu.cn:8086/");
-            html = html.Substring(html.IndexOf("<html"));
-            List<string> styels = new List<string>();
-            bool stylestaus = true;
-            HtmlGrammarOptions options = new HtmlGrammarOptions();
-            options.HandleCharacterReferences = true;
-            options.DecomposeCharacterReference = true;
-            options.HandleUnfinishedTags = true;
-            HtmlGrammar grammar = new HtmlGrammar(options);
-            HtmlReader reader = new HtmlReader(testHtml, grammar);
-            while (reader.Enumerator.IsDisposed) {
-                txtHtmlWhole.Text += reader.Enumerator.MoveNext().ToString();
-            }
-            reader.Builder.TokenChaning += delegate(TokenChangingArgs args)
-            {
-                if (args.HasBefore)
-                {
-                    txtHtmlWhole.Text += (args.Before.Id + "\t#" + args.Before.Value + "#\r\n");
-                }
-            };
-            HtmlReader.Read(reader, null);
-            for (int i = 0; i < styels.Count; i++)
-            {
-                txtHtmlWhole.Text +="> "+i+" --- "+styels[i]+"\r\n > \r\n";
-            }
+            //html = html.Substring(html.IndexOf("<html"));
+            //List<string> styels = new List<string>();
+            //bool stylestaus = true;
+            //HtmlGrammarOptions options = new HtmlGrammarOptions();
+            //options.HandleCharacterReferences = true;
+            //options.DecomposeCharacterReference = true;
+            //options.HandleUnfinishedTags = true;
+            //HtmlGrammar grammar = new HtmlGrammar(options);
+            //HtmlReader reader = new HtmlReader(testHtml, grammar);
+            //while (reader.Enumerator.IsDisposed) {
+            //    txtHtmlWhole.Text += reader.Enumerator.MoveNext().ToString();
+            //}
+            //reader.Builder.TokenChaning += delegate(TokenChangingArgs args)
+            //{
+            //    if (args.HasBefore)
+            //    {
+            //        txtHtmlWhole.Text += (args.Before.Id + "\t#" + args.Before.Value + "#\r\n");
+            //    }
+            //};
+            //HtmlReader.Read(reader, null);
+            //for (int i = 0; i < styels.Count; i++)
+            //{
+            //    txtHtmlWhole.Text +="> "+i+" --- "+styels[i]+"\r\n > \r\n";
+            //}
             //txtHtmlWhole.Text += reader.Status.ToString();
             //AfterWork.Html.Link link = new AfterWork.Html.Link(state, category);
             //txtHtmlWhole.Text +=  reader.State.Name;
@@ -77,9 +86,14 @@ namespace Website_Monitor
 
         private void button3_Click(object sender, EventArgs e)
         {
-            string str =" \t\t\t";
-            bool t = str.Trim() == "";
-            txtHtmlWhole.Text += t.ToString() ;
+            WebClient client = new WebClient();
+            html = Encoding.UTF8.GetString(client.DownloadData("file://G:/test1.html"));
+            html = html.Substring(html.IndexOf("<html"));
+            cjclass.HtmlResolve reader = new cjclass.HtmlResolve(html);
+            for (KsVs roll = reader.PopNextRoll(); roll.Key != "OVER"; roll = reader.PopNextRoll())
+            {
+                txtHtmlWhole.Text += roll.Key + "\t" + roll.Value+"\r\n";
+            }
         }
 
         private void browser_DocumentCompleted(object sender,

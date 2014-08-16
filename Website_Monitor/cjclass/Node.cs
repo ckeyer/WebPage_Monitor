@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using mshtml;
 
 namespace Website_Monitor.cjclass
 {
     public class Node
     {
-        StringBuilder s = new StringBuilder();
+        StringBuilder s ;
         public string name;
         public int Depth = 0;
-        public List<KeyValuePair<string, string>> Attribute= new List<KeyValuePair<string,string>>();
-        public List<Node> Child= new List<Node>();
+        public List<KeyValuePair<string, string>> Attribute;
+        public List<Node> Child;
         public Node Parent;
         public int NodesCount {
             get 
@@ -22,13 +23,60 @@ namespace Website_Monitor.cjclass
         public string TextContent;
         public Node()
         {
-            ;
+            this.name = "";
+            this.init();
         }
         public Node(string name)
         {
             this.name = name;
+            this.init();
         }
+        private void init()
+        {
+            Attribute = new List<KeyValuePair<string, string>>();
+            Child = new List<Node>(); 
+            s = new StringBuilder();
+            TextContent = "";
+        }
+        public void InsertDOMNodes(IHTMLDOMNode parentnode)
+        {
+            if (parentnode.hasChildNodes())
+            {
+                IHTMLDOMChildrenCollection allchild = (IHTMLDOMChildrenCollection)parentnode.childNodes;
+                int length = allchild.length;
 
+                for (int i = 0; i < length; i++)
+                {
+                    IHTMLDOMNode child_node = (IHTMLDOMNode)allchild.item(i);
+
+                    if (this.name =="")
+                    {
+                        this.name = parentnode.nodeName.ToLower();
+                        this.AddChild(child_node.nodeName.ToLower());
+                        this.Child.Last().InsertDOMNodes(child_node);
+                    }
+                    else
+                    {
+                        this.AddChild(child_node.nodeName.ToLower());
+                        this.Child.Last().InsertDOMNodes(child_node);
+                    }
+
+                    IHTMLAttributeCollection ac = (IHTMLAttributeCollection)parentnode.attributes;
+                    if (ac != null)
+                    {
+                        foreach (IHTMLDOMAttribute ab in ac)//获取每一个属性
+                        {
+                            if (ab.specified && ab.nodeName != null ) // && ab.nodeValue != null) //是否指定属性，
+                            {
+                                string m_sdomvalue = ab.nodeValue==null?"":ab.nodeValue.ToString();
+                                this.AddAttribute(ab.nodeName.ToLower(), m_sdomvalue);
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
         public void AddChild(Node child)
         {
             child.Depth = this.Depth + 1;
@@ -54,7 +102,7 @@ namespace Website_Monitor.cjclass
             }
             if (i < Attribute.Count)
             {
-                value = Attribute[i].Value + value;
+                //value = Attribute[i].Value;// + value;
                 Attribute.RemoveAt(i);
             }
             Attribute.Add(new KeyValuePair<string, string>(key, value));
@@ -88,7 +136,7 @@ namespace Website_Monitor.cjclass
                 string tmp = "<" + this.name;
                 for (int i = 0; i < this.Attribute.Count; i++)
                 {
-                    tmp += " " + Attribute[i].Key + "=" + Attribute[i].Value;
+                    tmp += " " + Attribute[i].Key + "=\"" + Attribute[i].Value+"\"";
                 }
                 if (this.Child.Count == 0)
                 {
