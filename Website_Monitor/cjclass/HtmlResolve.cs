@@ -10,8 +10,8 @@ namespace Website_Monitor.cjclass
     // html 文件的分解
     class HtmlResolve
     {           
-        private string Html;
-        private int position = 0;
+        private string Html,lastName,lastAttr;
+        private int position = 0,mode=0;
         private KsVs lastStatus,nowStatus;
         public HtmlResolve(string html)
         {
@@ -25,11 +25,20 @@ namespace Website_Monitor.cjclass
             {
                 case '<':
                     next = new KsVs("TAG_STARTS", popNextString(1));
-                    this.position = 1;  
+                    this.position = 1;
+                    mode = 0;
                     break;
                 case '>':
                     next = new KsVs("TAG_ENDS", popNextString(1));
-                    this.position = 4;  
+                    this.position = 4;
+                    if (lastName == "script")
+                    {
+                        mode = 1;
+                    }
+                    else if (lastName == "script")
+                    {
+                        mode = 2;
+                    }
                     break;
                 case '=':
                     next = new KsVs("ASSIGN", popNextString(1));
@@ -74,30 +83,53 @@ namespace Website_Monitor.cjclass
                     }
                     this.position = 2;
                     next = new KsVs("NAME", popNextString(minIndex).Trim().ToLower());
+                    lastName = next.Value;
                     break;
                 case "CLOSING":
                     minIndex = Html.IndexOf('>');
                     this.position = 3;
                     next = new KsVs("NAME", popNextString(minIndex).Trim().ToLower());
+                    lastName = next.Value;
                     break;
                 case "ASSIGN":
-                    popNextString(Html.IndexOf('\"')+1);
-                    minIndex = Html.IndexOf('\"');
+                    minIndex = Html.IndexOf(' ');
+                    while (minIndex == 0)
+                    {
+                        popNextString(1);
+                        minIndex = Html.IndexOf(' ');
+                    }
                     this.position = 2;
                     next = new KsVs("QUOTED_VALUE", popNextString(minIndex).Trim());
                     popNextString(1);
                     break;
                 case "TAG_ENDS":
-                    minIndex = Html.IndexOf('<');
-                    this.position = 4;
-                    string tmpStr = popNextString(minIndex).Trim();
-                    if (tmpStr == "")
+                    if (mode == 0)
                     {
-                        next = new KsVs("WHITESPACE", " ");
+                        minIndex = Html.IndexOf('<');
+                        this.position = 4;
+                        string tmpStr = popNextString(minIndex).Trim();
+                        if (tmpStr == "")
+                        {
+                            next = new KsVs("WHITESPACE", " ");
+                        }
+                        else
+                        {
+                            next = new KsVs("TEXT", tmpStr);
+                        }
                     }
-                    else
+                    else if (mode == 1)
                     {
-                        next = new KsVs("TEXT", tmpStr);
+                        minIndex = Html.IndexOf("</");
+                        this.position = 4;
+                        string tmpStr = popNextString(minIndex).Trim();
+                        if (tmpStr == "")
+                        {
+                            next = new KsVs("WHITESPACE", " ");
+                        }
+                        else
+                        {
+                            next = new KsVs("TEXT", tmpStr);
+                        }
                     }
                     break;
                 default:
@@ -107,6 +139,7 @@ namespace Website_Monitor.cjclass
                             minIndex = Html.IndexOf('=');
                             this.position = 2;
                             next = new KsVs("ATTR", popNextString(minIndex).Trim().ToLower());
+                            lastAttr = next.Value;
                             break;
                     }
                     break;
@@ -123,5 +156,6 @@ namespace Website_Monitor.cjclass
             Html = Html.Remove(0, n);
             return tmp;
         }
+
     }
 }

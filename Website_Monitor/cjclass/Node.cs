@@ -90,7 +90,7 @@ namespace Website_Monitor.cjclass
             child.Parent = this;
             Child.Add(child);
         }
-        public void AddAttribute(string key,string value)
+        public void AddAttribute(string key, string value)
         {
             int i = 0;
             for (; i < this.Attribute.Count; i++)
@@ -103,6 +103,23 @@ namespace Website_Monitor.cjclass
             if (i < Attribute.Count)
             {
                 //value = Attribute[i].Value;// + value;
+                Attribute.RemoveAt(i);
+            }
+            Attribute.Add(new KeyValuePair<string, string>(key, value));
+        }
+        public void AddToAttribute(string key, string value)
+        {
+            int i = 0;
+            for (; i < this.Attribute.Count; i++)
+            {
+                if (Attribute[i].Key == key)
+                {
+                    break;
+                }
+            }
+            if (i < Attribute.Count)
+            {
+                value = Attribute[i].Value +"/"+ value;
                 Attribute.RemoveAt(i);
             }
             Attribute.Add(new KeyValuePair<string, string>(key, value));
