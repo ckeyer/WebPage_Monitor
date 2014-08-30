@@ -52,6 +52,12 @@
     <Compile Include="cjclass\HtmlResolve.cs" />
     <Compile Include="cjclass\WebPage.cs" />
     <Compile Include="cjclass\Website.cs" />
+    <Compile Include="form\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="form\MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="TEST\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -60,6 +66,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="form\MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TEST\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

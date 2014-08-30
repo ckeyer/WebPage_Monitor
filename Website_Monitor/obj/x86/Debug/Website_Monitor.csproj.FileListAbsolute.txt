@@ -17,3 +17,4 @@ G:\code\go\src\webPage_Monitor\Website_Monitor\bin\Debug\Website_Monitor.pdb
 G:\code\go\src\webPage_Monitor\Website_Monitor\obj\x86\Debug\Website_Monitor.exe
 G:\code\go\src\webPage_Monitor\Website_Monitor\obj\x86\Debug\Website_Monitor.pdb
 G:\code\go\src\webPage_Monitor\Website_Monitor\obj\x86\Debug\Website_Monitor.csproj.ResolveComReference.cache
+G:\code\go\src\webPage_Monitor\Website_Monitor\obj\x86\Debug\Website_Monitor.form.MainForm.resources

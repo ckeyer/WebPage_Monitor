@@ -35,7 +35,7 @@ namespace Website_Monitor
         }
         private void button1_Click(object sender, EventArgs e)
         {
-            txtHtmlWhole.Text = popNextString(testHtml.IndexOf('\"'));
+            //txtHtmlWhole.Text = popNextString(testHtml.IndexOf('\"'));
             //WebClient client = new WebClient();
             //html = Encoding.UTF8.GetString(client.DownloadData("file://G:/test1.html"));
             
@@ -86,13 +86,15 @@ namespace Website_Monitor
 
         private void button3_Click(object sender, EventArgs e)
         {
-            WebClient client = new WebClient();
-            html = Encoding.UTF8.GetString(client.DownloadData("file://G:/test1.html"));
-            html = html.Substring(html.IndexOf("<html"));
-            cjclass.HtmlResolve reader = new cjclass.HtmlResolve(html);
-            for (KsVs roll = reader.PopNextRoll(); roll.Key != "OVER"; roll = reader.PopNextRoll())
+            //WebClient client = new WebClient();
+            //html = Encoding.UTF8.GetString(client.DownloadData("file://G:/test1.html"));
+            //html = html.Substring(html.IndexOf("<html"));
+            //cjclass.HtmlResolve reader = new cjclass.HtmlResolve(html);
+            char[] n = { ' ','\t'};
+            string str = "\t as ";
+            if (str.Trim() == "as")
             {
-                txtHtmlWhole.Text += roll.Key + "\t" + roll.Value+"\r\n";
+                MessageBox.Show("hhh");
             }
         }
 

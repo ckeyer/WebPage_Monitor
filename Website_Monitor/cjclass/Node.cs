@@ -14,6 +14,9 @@ namespace Website_Monitor.cjclass
         public List<KeyValuePair<string, string>> Attribute;
         public List<Node> Child;
         public Node Parent;
+
+        private string[] atomNodeName = { "link","meta"};
+
         public int NodesCount {
             get 
             {
@@ -157,11 +160,18 @@ namespace Website_Monitor.cjclass
                 }
                 if (this.Child.Count == 0)
                 {
-                    tmp += "/>\r\n";
+                    if (Array.IndexOf(atomNodeName, this.name) >= 0)
+                    {
+                        tmp += "/>\r\n";
+                    }
+                    else
+                    {
+                        tmp += " ></" + this.name + ">\r\n";
+                    }
                 }
                 else
                 {
-                    tmp += ">\r\n";
+                    tmp += " >\r\n";
                     for (int i = 0; i < Child.Count; i++)
                     {
                         tmp+=Child[i].ToString();
