@@ -289,7 +289,7 @@ namespace Website_Monitor.cjclass
         public string GetHtmlMD5()
         {
             if (Html != null)
-                return CJMainServer.EncryptMd5(Html);
+                return server.Situation.EncryptMd5(Html);
             else
             {
                 return "";

@@ -46,12 +46,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="cjclass\CJMainServer.cs" />
-    <Compile Include="cjclass\Monitor.cs" />
-    <Compile Include="cjclass\Node.cs" />
-    <Compile Include="cjclass\HtmlResolve.cs" />
-    <Compile Include="cjclass\WebPage.cs" />
-    <Compile Include="cjclass\Website.cs" />
+    <Compile Include="localhost\LocalFolder.cs" />
+    <Compile Include="localhost\LocalFile.cs" />
+    <Compile Include="server\CJEvent.cs" />
+    <Compile Include="server\CJLog.cs" />
+    <Compile Include="server\MainConf.cs" />
+    <Compile Include="server\MainServer.cs" />
+    <Compile Include="server\Situation.cs" />
+    <Compile Include="website\Monitor.cs" />
+    <Compile Include="website\Node.cs" />
+    <Compile Include="website\HtmlResolve.cs" />
+    <Compile Include="website\WebPage.cs" />
+    <Compile Include="website\Website.cs" />
     <Compile Include="form\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -81,7 +87,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="cjclass\readme.md" />
+    <None Include="website\readme.md" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -93,6 +99,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Config.xml" />
     <Content Include="lib\AfterWork.Html.dll" />
   </ItemGroup>
   <ItemGroup>
@@ -106,6 +113,7 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

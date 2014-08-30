@@ -77,11 +77,12 @@ namespace Website_Monitor
             string url = "file://G:/test1.html";
             //url = "http://hbagri.gov.cn/";
             cjclass.WebPage page = new cjclass.WebPage(url);
-            txtHtmlWhole.Text = page.RootNode.ToString();
-
+            //txtHtmlWhole.Text = page.RootNode.ToString();
+            File.WriteAllText("G:/test2.html",page.RootNode.ToString());
+            
             //txtHtmlWhole.Text += page.Status.Value;
             //txtHtmlWhole.Text += page.testGetAtom();
-            //txtHtmlWhole.Text = page.Html;
+            txtHtmlWhole.Text = "OVER";
         }
 
         private void button3_Click(object sender, EventArgs e)

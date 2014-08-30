@@ -192,7 +192,7 @@ namespace Website_Monitor.cjclass
         }
         public string getNodeMd5()
         {
-            return CJMainServer.EncryptMd5(this.ToString());
+            return server.Situation.EncryptMd5(this.ToString());
         }
         public List<string> getQuotedByAttr(string attr)
         {

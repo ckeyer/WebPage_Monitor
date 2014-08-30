@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Security.Cryptography;
 
-namespace Website_Monitor.cjclass
+namespace Website_Monitor.server
 {
-    class CJMainServer
+    public class Situation
     {
         public static string EncryptMd5(string strPwd)
         {

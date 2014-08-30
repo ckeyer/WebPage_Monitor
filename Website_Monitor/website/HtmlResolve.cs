@@ -28,7 +28,7 @@ namespace Website_Monitor.cjclass
         private bool inOneLine ;
         private KsVs ssText;
         private string[] tagsNoChild
-            = { "script", "style", "meta", "title", "br", "iframe" };
+            = { "script", "style", "meta", "title", "br", "iframe","img" };
     
         public HtmlResolve(string html)
         {
@@ -204,12 +204,12 @@ namespace Website_Monitor.cjclass
             }
             else
             {
-                foreach (string tag in tagsNoChild)
+                
+                while (true)
                 {
-                    if (tag == tagStack.Peek())
+                    if (tagStack.Pop() == tagname)
                     {
-                        nowNode = nowNode.Parent;
-                        tagStack.Pop();
+                        return ;
                     }
                 }
             }
@@ -365,7 +365,7 @@ namespace Website_Monitor.cjclass
             }
 
             // for TEST ************************
-            if (lineNum == 1966)
+            if (lineNum >= 2010)
             {
                 return;
             }
