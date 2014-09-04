@@ -1,17 +1,21 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <cjstudio>
   <Project>
     <Name>站点监控</Name>
-    <Version>v1.0</Version>
+    <Version>v1.0</Version>                                                                                                                                                                                                                                                                                                                                                      
     <Author>CJ_Studio</Author>
     <CreateTime>2014-7-7 下午</CreateTime>
     <UpdateTime>2014-8-31 下午</UpdateTime>
+    <DatabasePath path=""/>
   </Project>
   <Website>
-    <Site url="" createTime="">
-      
+    <Site url="" createTime="" >
+      <Ignore url="" name="" id="" />
     </Site>
   </Website>
   <Localhost>
+    <Folder path="" createTime="">
+      <FileType name="" />
+    </Folder>
   </Localhost>
 </cjstudio>

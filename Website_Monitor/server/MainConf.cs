@@ -6,29 +6,29 @@ using System.Xml;
 
 namespace Website_Monitor.server
 {
+    using KsVs = KeyValuePair<string, string>;
+    using KiVs = KeyValuePair<int, string>;
     public static class MainConf
     {
-        private const string confPath = "Config.xml";
-        public const string XMLHeader = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>";
-        private  static XmlDocument xmlDoc = new XmlDocument();
-        private  static XmlElement rootNode;
-        public CJLog log;
-
-        public enum ConfigState : uint
-        {
-            OK = 0,     // 获取成功
-            DEFAULT,  // 有错误，而且已经使用默认值
-            WARING,    // 警告
-            ERROR    // 严重错误
+        static KiVs Status { public get; private set; }
+        static string DatabasePath {public get; public set
+            {
+                ;
+            }
         }
+
+        
+        private const string confPath = "Config.xml";
+        private const string XMLHeader = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>";
+        private static XmlDocument xmlDoc = new XmlDocument();
+        private static XmlElement rootNode;
 
         public static void init()
         {
             getConf();
         }
-
         // 获取配置信息
-        private static ConfigState getConf()
+        private static void getConf()
         {
             try
             {
@@ -36,10 +36,10 @@ namespace Website_Monitor.server
             }
             catch
             {
-                ConfigState cstmp = initConfFile();
-                if (cstmp > ConfigState.WARING)
+                initConfFile();
+                if (Status.Key < 0)
                 {
-                    return cstmp;
+                    return;
                 }
                 xmlDoc.LoadXml(confPath);
             }
@@ -63,14 +63,14 @@ namespace Website_Monitor.server
             }
             catch (Exception)
             {
-                log.loging("读取链接配置文件出现错误", CJLog.LogLevel.COMMON_ERROR);
-                return ConfigState.DEFAULT;
+                Status = new KiVs(-1, "获取配置信息失败");
+                return ;
                 //System.Environment.Exit(-1);
             }
-            return ConfigState.OK;
+            
         }
         // 初始化配置文件
-        private static ConfigState initConfFile()
+        private static void initConfFile()
         {
             XmlDocument xmlDoc = new XmlDocument();
             try
@@ -103,11 +103,8 @@ namespace Website_Monitor.server
             }
             catch (Exception)
             {
-                log.loging("初始化链接配置文件出错，可能需要重新安装",
-                    CJLog.LogLevel.FATAL_ERROR);
-                return ConfigState.ERROR;
+                Status = new KiVs(-2,"初始化配置文件失败");
             }
-            return ConfigState.OK;
         }
 
     }

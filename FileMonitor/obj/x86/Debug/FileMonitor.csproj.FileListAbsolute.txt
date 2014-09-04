@@ -1,0 +1,8 @@
+G:\code\C#\TEST2\FileMonitor\bin\Debug\FileMonitor.exe
+G:\code\C#\TEST2\FileMonitor\bin\Debug\FileMonitor.pdb
+G:\code\C#\TEST2\FileMonitor\obj\x86\Debug\FileMonitor.Form1.resources
+G:\code\C#\TEST2\FileMonitor\obj\x86\Debug\FileMonitor.Properties.Resources.resources
+G:\code\C#\TEST2\FileMonitor\obj\x86\Debug\FileMonitor.csproj.GenerateResource.Cache
+G:\code\C#\TEST2\FileMonitor\obj\x86\Debug\FileMonitor.exe
+G:\code\C#\TEST2\FileMonitor\obj\x86\Debug\FileMonitor.pdb
+G:\code\C#\TEST2\FileMonitor\obj\x86\Debug\FileMonitor.csprojResolveAssemblyReference.cache

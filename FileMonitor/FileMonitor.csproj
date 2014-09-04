@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{20163CD4-1115-42AF-AD97-8CAED77FC61A}</ProjectGuid>
+    <ProjectGuid>{F1D7F112-E3CC-4892-A4F9-D39C25CE4A5B}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Website_Monitor</RootNamespace>
-    <AssemblyName>Website_Monitor</AssemblyName>
+    <RootNamespace>FileMonitor</RootNamespace>
+    <AssemblyName>FileMonitor</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -46,36 +46,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="localhost\LocalFolder.cs" />
-    <Compile Include="localhost\LocalFile.cs" />
-    <Compile Include="server\CJEvent.cs" />
-    <Compile Include="server\CJLog.cs" />
-    <Compile Include="server\MainConf.cs" />
-    <Compile Include="server\MainServer.cs" />
-    <Compile Include="server\Situation.cs" />
-    <Compile Include="website\Monitor.cs" />
-    <Compile Include="website\Node.cs" />
-    <Compile Include="website\HtmlResolve.cs" />
-    <Compile Include="website\WebPage.cs" />
-    <Compile Include="website\Website.cs" />
-    <Compile Include="form\MainForm.cs">
+    <Compile Include="CJFolder.cs" />
+    <Compile Include="CJMonitor.cs" />
+    <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="form\MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TEST\Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TEST\Form1.Designer.cs">
+    <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="form\MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TEST\Form1.resx">
+    <Compile Include="Test.cs" />
+    <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -87,7 +69,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="website\readme.md" />
+    <None Include="FileMonitor.conf" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -99,23 +81,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Config.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="lib\AfterWork.Html.dll" />
+    <Content Include="PerfCenterCpl.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <COMReference Include="MSHTML">
-      <Guid>{3050F1C5-98B5-11CF-BB82-00AA00BDCE0B}</Guid>
-      <VersionMajor>4</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </COMReference>
-  </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

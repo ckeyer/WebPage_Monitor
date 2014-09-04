@@ -1,0 +1,7 @@
+G:\code\C#\TEST2\FileMonitor\bin\Release\FileMonitor.exe
+G:\code\C#\TEST2\FileMonitor\bin\Release\FileMonitor.pdb
+G:\code\C#\TEST2\FileMonitor\obj\x86\Release\FileMonitor.Form1.resources
+G:\code\C#\TEST2\FileMonitor\obj\x86\Release\FileMonitor.Properties.Resources.resources
+G:\code\C#\TEST2\FileMonitor\obj\x86\Release\FileMonitor.csproj.GenerateResource.Cache
+G:\code\C#\TEST2\FileMonitor\obj\x86\Release\FileMonitor.exe
+G:\code\C#\TEST2\FileMonitor\obj\x86\Release\FileMonitor.pdb
